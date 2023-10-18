@@ -1,0 +1,609 @@
+<DOCTYPE! html>
+
+<html>
+    <head>
+        <title>
+            Registration Form
+        </title>
+    </head>
+
+    <body>
+        <h1 style="margin-bottom:70px; text-align:center">
+            Registration Form
+        </h1>
+        <input type="radio" name="registration" value="Student" onclick="fnStudentform();fnClrallinputs()">Student
+        <input type="radio" name="registration" value="Teacher" onclick="fnTeacherform();fnClrallinputs()">Teacher
+        
+        <form id="frmregistration">
+            <table style="display: none;" id="tblform">
+                
+                <tr>
+                    <th style="text-align: left;">
+                        <span style="text-align: left;">Name</span>
+                        <input type="text" id="Fname" placeholder="First Name"/>
+                        <input type="text" id="Mname" placeholder="Middle Name" />
+                        <input type="text" id="Lname" placeholder="Last Name" />
+                    </th>
+                </tr>
+    
+                <tr>
+                    <th style="text-align: left;">
+                        Date of Birth
+                        <input type="date" id="DOB" onchange="fnValidateDOB();" />
+                    </th>
+                </tr>
+    
+                <tr>
+                    <th style="text-align: left;">
+                        Gender
+                        <input type="radio" id="MGen" name="gender" value="Male" onchange="EnableButton()" checked="checked" />Male
+                        <input type="radio" id="FGen" name="gender" value="Female" onchange="EnableButton()"> Female
+                        <input type="radio" id="OGen" name="gender" value="Other" onchange="Disablebutton()"> Other
+                    </th>
+                </tr>
+    
+                <tr>
+                    <th style="text-align: left;">
+                        Mobile No
+                        <input type="text" id="txtMobile" maxlength="10" onchange="fnMobileValidate()" />
+                    </th>
+                </tr>
+    
+                <tr>
+                    <th style="text-align: left;">
+                        Email_id
+                        <input type="email" id="txtEmail" onchange="fnEmailValidate()" />
+                    </th>
+                </tr>
+                <tr>
+                    <th style="text-align: left;">
+                        Select Course
+                        <select id="course" onchange="fnSubjectSelection() ">
+                            <option value="" id="ps"> Please select </option>
+                            <option value="mech" >Mechanical</option>
+                            <option value="comp">Computer</option>
+                            <option value="extc">EXTC</option>
+                        </select>
+                    </th>
+                </tr>
+                <tr id="checkmech" style="display: none; text-align: left;">
+                    <td>
+                        
+                    </td>
+                </tr>
+                <tr id="checkcomp" style="display: none; text-align: left;">
+                    <td>
+                        
+                    </td>
+                </tr>
+                <tr id="checkextc" style="display: none; text-align: left;">
+                    <td>
+                        
+                    </td>
+                </tr>
+
+                <tr id="trdoj">
+                    <th style="text-align: left;">
+                        Date of Joining
+                        <input type="date" id="doj" />
+                    </th>
+                </tr>
+            </table>
+
+            <input type="button" id="btnreset" style="margin-top:40px; margin-right:100px; display: none;" name="BtnReset" value="Reset" onclick="fnReset()"  />
+            <input type="button" id="btnSave" name="BtnSave" value="Save" onclick="fnValidate(); addrow(); fndisplay_Clear()" style="display: none;"/>
+            
+            <table style=" display: none; margin-top: 20px; margin-left: 5px; border: 2px solid; width: 100%; text-align: center" id="tbldata">
+                <tr style="border: 1px solid">
+                    <th>Sr.No.</th>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Age</th>
+                    <th> Gender </th>
+                    <th>Mobile no.</th>
+                    <th> Email_id </th>
+                    <th> Selected Course </th>
+                    <th>Subjects</th>
+                    <th>Date of joining </th>
+                    <th>Experience</th>
+                    <th>Registration type</th>
+                </tr>
+            </table>
+            <input type="button" style="display: none; margin-left: 5px ; margin-top: 30px;" id="btnreload" value="Reset Page" onclick="fnReloadpage()">
+
+            <script type="text/javascript">
+
+                var serialNumber = 1;
+                var is_valid = false;
+            // var student = document.querySelector('input[value="Student"]').checked;
+            // var faculty = document.querySelector('input[value="Teacher"]').checked;
+            // var table = document.getElementById("tbldata");
+
+                function fnSubjectSelection() 
+                {
+                    var selectedCourse = document.getElementById("course").value;
+                    var checkboxContainer = document.getElementById("checkmech");
+                    
+
+                    // Clear any existing checkboxes
+                    checkboxContainer.innerHTML = '';
+
+                    if (selectedCourse == "mech")
+                    {debugger;
+                        // Array of Mechanical subjects
+                        var mechanicalS = ["Strength of Machine", "Dynamics of Machine", "Business Communication", "Maths", "Refrigeration and Air-conditioning system"];
+
+                        // Loop through the subjects
+                        for (var i = 0; i < mechanicalS.length; i++) {
+                            var mechanical = mechanicalS[i];
+
+                            // Create a new checkbox element
+                            var checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.id = "mechanical" + i; // Set a unique ID for each checkbox
+                            checkbox.value = mechanicalS[i]; // Set a common name for all checkboxes
+
+                            // Create a label for the checkbox
+                            var label = document.createElement("label");
+                            label.htmlFor = "mechanical" + i;
+                            label.appendChild(document.createTextNode(mechanical));
+
+                            // Append the checkbox and label to the container
+                            checkboxContainer.appendChild(checkbox);
+                            checkboxContainer.appendChild(label);
+
+                            // for printing checkbox in new line 
+                            checkboxContainer.appendChild(document.createElement("br")); 
+                        }
+                        document.getElementById("checkmech").style.display = '';
+                        document.getElementById("checkcomp").style.display = 'none';
+                        document.getElementById("checkextc").style.display = 'none';                    
+                        
+                        //console.log(selectedsubject);
+                    }
+                
+                    else if(selectedCourse == "comp"){
+                        var computerS = ["Coding with Java", "Machine Learning", "Business Communication", "Maths", "Data Structure and Algorithms"];
+
+                        var checkboxContainer = document.getElementById("checkcomp");
+                        checkboxContainer.innerHTML = '';
+
+                        for(var i=0; i<computerS.length; i++){
+                            var computer = computerS[i];
+                            var checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.id = "computer" + i;
+                            checkbox.value = computerS[i]
+
+                            var label = document.createElement("label");
+                            label.htmlFor = "computer" + i;
+                            label.appendChild(document.createTextNode(computer));
+
+                            checkboxContainer.appendChild(checkbox);
+                            checkboxContainer.appendChild(label);
+                            checkboxContainer.appendChild(document.createElement("br"));
+
+                        }
+                        document.getElementById("checkcomp").style.display = '';
+                        document.getElementById("checkmech").style.display = 'none';
+                        document.getElementById("checkextc").style.display = 'none';
+
+                    }
+
+                    else if(selectedCourse == "extc"){
+                        var extcS = ["Digital Communication", "Electromagnetic Engineering", "Business Communication", "Maths", "Antenna & Radio Wave Propagation"];
+                        var checkboxContainer = document.getElementById("checkextc");
+                        checkboxContainer.innerHTML = '';
+
+                        for(var i=0; i<extcS.length; i++){
+                            var extc = extcS[i];
+                            var checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.id = "extc" + i;
+                            checkbox.value = extcS[i]
+
+                            var label = document.createElement("label");
+                            label.htmlFor = "computer" + i;
+                            label.appendChild(document.createTextNode(extc));
+
+                            checkboxContainer.appendChild(checkbox);
+                            checkboxContainer.appendChild(label);
+                        }
+                        document.getElementById("checkextc").style.display = '';
+                        document.getElementById("checkcomp").style.display = 'none';
+                        document.getElementById("checkmech").style.display = 'none';
+
+                        checkboxContainer.appendChild(document.createElement("br"));
+                    }
+                }
+
+                function fnStudentform()
+                {
+                    if (document.querySelector('input[value="Student"]').checked) {
+                        document.getElementById("tblform").style.display = '';
+                        document.getElementById("tblform").value = '';
+                        document.getElementById("trdoj").style.display = 'none';
+                        document.getElementById("btnSave").style.display='';
+                        document.getElementById("btnreset").style.display='';
+                        
+                    } 
+                }
+
+                function fnTeacherform(){
+                    if (document.querySelector('input[value="Teacher"]').checked) {
+                        document.getElementById("tblform").style.display = '';
+                        document.getElementById("trdoj").style.display = '';
+                        document.getElementById("btnSave").style.display='';
+                        document.getElementById("btnreset").style.display='';
+                    }
+                }
+
+                function fnValidateDOB(){
+                    var dt = new Date();
+                    var txtdt = document.getElementById("DOB")
+                    var inputdate = new Date(txtdt.value);
+
+                    var userType = document.querySelector('input[name="registration"]:checked').value;
+
+                    if(userType == "Student"){
+                        if(dt.getFullYear() - inputdate.getFullYear() < 18)
+                        {
+                        alert("Minimum age should be 18 or greater !")
+                        document.getElementById("DOB").value = '';
+                        document.getElementById("DOB").focus();
+                        }
+                    }
+
+                    else if(userType == "Teacher"){
+                        if(dt.getFullYear()- inputdate.getFullYear() < 25){
+                        alert("Minimum age should be 25 or greater !")
+                        document.getElementById("DOB").value = '';
+                        document.getElementById("DOB").focus();
+                        }
+                    }
+                }
+
+                function fnClrallinputs(){
+                    document.getElementById("frmregistration").reset();
+                    document.getElementById("checkcomp").style.display = 'none';
+                    document.getElementById("checkextc").style.display = 'none';
+                    document.getElementById("checkmech").style.display = 'none';
+                }
+
+                // function fnSubjectSelection(){
+
+                //     if(document.getElementById("course").value == 'mech'){
+                //         document.getElementById("checkmech").style.display = '';
+                //         document.getElementById("checkcomp").style.display = 'none';
+                //         document.getElementById("checkextc").style.display = 'none';
+                //     }
+                //     else if(document.getElementById("course").value == 'comp'){
+                //         document.getElementById("checkcomp").style.display = '';
+                //         document.getElementById("checkextc").style.display = 'none';
+                //         document.getElementById("checkmech").style.display = 'none';
+                //     }
+                //     else if(document.getElementById("course").value == 'extc'){
+                //         document.getElementById("checkextc").style.display = '';
+                //         document.getElementById("checkcomp").style.display = 'none';
+                //         document.getElementById("checkmech").style.display = 'none';
+                //     }
+                // }
+
+                function fnMobileValidate(){
+            
+
+                    var student = document.querySelector('input[value="Student"]').checked;
+                    var faculty = document.querySelector('input[value="Teacher"]').checked;
+                    var table = document.getElementById("tbldata");
+                    var mobile = document.getElementById("txtMobile").value.trim();
+
+                    for (var i = 0; i < table.rows.length; i++) {
+                        var row = table.rows[i];
+                        var userTypeCell = row.cells[11];     // user type is in 11th cell
+                        var mobileCell = row.cells[5];        // mobile number is in 5th cell
+
+                        var userType = userTypeCell.innerText.trim();
+
+                        if (userType == "Student" && student ||
+                            userType == "Teacher" && faculty) {
+                            if (mobileCell.innerText.trim() == mobile) {
+                                is_valid == false;
+                                alert("Phone number already exists for the selected user type!");
+                                document.getElementById("txtMobile").value = '';
+                                document.getElementById("txtMobile").focus();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                function fnEmailValidate(){
+
+                    var student = document.querySelector('input[value="Student"]').checked;
+                    var faculty = document.querySelector('input[value="Teacher"]').checked;
+                    var table = document.getElementById("tbldata");
+                    var email = document.getElementById("txtEmail").value.trim();
+
+                    for (var i = 0; i < table.rows.length; i++) {
+                        var row = table.rows[i];
+                        var userTypeCell = row.cells[11];     // user type is in the 11th cell
+                        var emailCell = row.cells[6];       // email_id is in the 6th cell
+
+                        var userType = userTypeCell.innerText.trim();
+                        if (userType == "Student" && student ||
+                            userType == "Teacher" && faculty){
+                                if (emailCell.innerText.trim() == email) {
+                                    is_valid == false;
+                                    alert("Email_id is already exists for the selected user type!")
+                                    document.getElementById("txtEmail").value = '';
+                                    document.getElementById("txtEmail").focus();
+                                    break;
+                    }
+                            }
+                        else{
+                            is_valid == true;
+                        }
+                    }
+                }
+                
+                function fnValidate()                  //function for validation of all inputs parameters
+                {//debugger;
+                    //var count2 = fnSubjectchoose();
+
+                    var Fname = document.getElementById("Fname").value;
+                    var Mname = document.getElementById("Mname").value;
+                    var Lname = document.getElementById("Lname").value;
+                    var DOB = document.getElementById("DOB").value;
+                    var Mechanical = document.getElementById("checkmech").value;
+                    var Computer = document.getElementById("checkcomp").value;
+                    var Extc = document.getElementById("checkextc").value;
+                    //debugger;
+                    //var gender = document.getElementByName("gender").value;
+                    var MGen = document.getElementById("MGen").checked;
+                    var FGen = document.getElementById("FGen").checked;
+                    var OGen = document.getElementById("OGen").checked;
+                    var Mobile = document.getElementById("txtMobile").value;
+                    var email = document.getElementById("txtEmail").value;
+                    var Course = document.getElementById("course").value;
+                    var dateofJoining  = document.getElementById("doj").value;
+
+                    var atleat2 = fnSubjectchoose();
+                    var count2 = atleat2.count;
+                    
+                    var Error_message = "";          // Created empty variable for Error message
+                    
+                    if (!Fname) {
+                        Error_message += "Kindly enter first name\n";
+                        is_valid = false;
+                    }
+                    if (!Mname) {
+                        Error_message += "Kindly enter middle name\n";
+                        is_valid = false;
+                        
+                    }
+                    if (!Lname) {
+                        Error_message += "Kindly enter last name\n";
+                        is_valid = false;
+                        
+                    }
+                    if (!DOB) {
+                        Error_message += "kindly enter Date of Birth\n";
+                        is_valid = false;
+
+                    }
+                    //if (!gender) {
+                    if (!(MGen || FGen || OGen)) {
+                        Error_message += "Kindly choose the Gender\n";
+                        is_valid = false;
+
+                    }
+                    if (!Mobile) {
+                        Error_message += "kindly enter the Mobile Number\n";
+                        is_valid = false;
+                        
+                    }
+                    if (!email) {
+                        Error_message += "kindly entere the email id\n";
+                        is_valid = false;
+                        
+                    }
+                    if (!Course) {
+                        Error_message += "Kindly enter the course name\n";
+                        is_valid = false;
+                        
+                    }
+
+                    if (document.querySelector('input[value="Teacher"]').checked){
+                        if(!dateofJoining){
+                            Error_message += "Kindly enter date of joining\n"
+                        }
+
+                    }
+                    if(!(count2 >= 2)){
+                        Error_message += "Kindly choose atleast two subject\n";
+                        is_valid = false;
+                    }
+
+                    if (Error_message != "") {
+                            alert(Error_message);
+                        }
+                    else if (Error_message == "") {
+                        is_valid = true;
+                        
+                        alert("Data added sucessfully !!!");
+                    }
+                }
+                
+                function addrow() {
+                   // debugger;
+
+                    if (is_valid == true) {
+                        var tbl = document.getElementById("tbldata");
+                        var rowcount = tbl.rows.length;
+
+                        var row = tbl.insertRow(rowcount);
+
+                        var tdSrno = row.insertCell(0);
+                        tdSrno.innerText = serialNumber;
+                        serialNumber += 1;
+
+                        var tdName = row.insertCell(1);
+                        firstName = document.getElementById("Fname").value;
+                        middleName = document.getElementById("Mname").value;
+                        lastName = document.getElementById("Lname").value;
+
+                        tdName.innerText = firstName + " " + middleName + " " + lastName;
+
+                        var tdDOB = row.insertCell(2);
+                        tdDOB.innerText = document.getElementById("DOB").value;
+
+                        var dt = new Date();
+                        var txtdt = document.getElementById("DOB")
+                        var inputdate = new Date(txtdt.value);
+
+                        var userType = document.querySelector('input[name="registration"]:checked').value;
+                        var age = dt.getFullYear() - inputdate.getFullYear()
+
+                        var tdage = row.insertCell(3);
+                        tdage.innerText = age;
+
+
+                        var tdGender = row.insertCell(4);
+                        var selectGender = document.querySelector('input[name="gender"]:checked');
+                        tdGender.innerText = selectGender.value;
+
+                        var tdMobile = row.insertCell(5);
+                        tdMobile.innerText = document.getElementById("txtMobile").value;
+
+                        var tdEmail = row.insertCell(6);
+                        tdEmail.innerText = document.getElementById("txtEmail").value;
+
+                        var courseSelect = document.getElementById("course");
+                        var x = courseSelect.selectedIndex;
+                        var y = courseSelect.options;
+                        var tdCourse = row.insertCell(7);
+                        tdCourse.innerText = y[x].text;
+                        
+                        
+                        var subject = fnSubjectchoose();
+
+                        var tdSS = row.insertCell(8);
+                        tdSS.innerText = subject.selectedsubject;
+
+                        var tdDOB = row.insertCell(9);
+                        tdDOB.innerText = document.getElementById("doj").value;
+                        var Experience = "";
+
+                        if (document.querySelector('input[value="Teacher"]').checked)
+                        {
+                            var txtjoin = document.getElementById("doj")
+                            var joindate = new Date(txtjoin.value);
+
+                            //var userType = document.querySelector('input[name="registration"]:checked').value;
+                            var Expyr = dt.getFullYear() - joindate.getFullYear();
+                            var Expmon = dt.getMonth() - joindate.getMonth();
+                            var Expday = dt.getDate() - joindate.getDate();
+
+                            Experience = Expyr+"Y-" + Expmon+"M-" + Expday+"D";
+                        }
+                        var tdexp = row.insertCell(10);
+                        tdexp.innerText = Experience;
+
+                        var tdRegistype = row.insertCell(11);
+                        if (document.querySelector('input[value="Student"]').checked){
+                            tdRegistype.innerText = document.querySelector('input[value="Student"]').value;
+                        }
+                        else if(document.querySelector('input[value="Teacher"]').checked){
+                            tdRegistype.innerText = document.querySelector('input[value="Teacher"]').value;
+                        }
+                    }
+                }
+
+                function fndisplay_Clear() {
+
+                    if (is_valid == true) {
+                        document.getElementById("tbldata").style.display = '';
+                        document.getElementById("btnreload").style.display = '';
+                        document.getElementById("frmregistration").reset();
+                        //document.getElementById("ps").value = "";
+                        document.getElementById("checkcomp").style.display = 'none';
+                        document.getElementById("checkextc").style.display = 'none';
+                        document.getElementById("checkmech").style.display = 'none';
+                    }
+                }
+
+                var selectedsubject = "";
+               // var count = 0;
+
+                function fnSubjectchoose(){
+                    //debugger;
+                    selectedsubject = "";
+                    var count = 0;
+
+                    if (document.getElementById("course").value == 'mech') {
+                        for (var i = 0; i <= 4; i++) {
+                            var checkboxId = "mechanical" + [i];
+                            if (document.getElementById(checkboxId).checked) {
+                                count++;
+                                selectedsubject += document.getElementById(checkboxId).value     + "\n";
+                                //addRowToTable(document.getElementById(checkboxId).value);
+                            }
+                        }
+                    } 
+                    else if (document.getElementById("course").value == 'comp') {
+                        for (var i = 0; i <= 4; i++) {
+                            var checkboxId = "computer" + [i];
+                            if (document.getElementById(checkboxId).checked) {
+                                count++;
+                                selectedsubject += document.getElementById(checkboxId).value + "\n";
+                            }
+                        }
+                    }
+                    else if(document.getElementById("course").value == 'extc'){
+                        for(var i = 0; i <= 4; i++){
+                            var checkboxId = "extc" + [i];
+                            if (document.getElementById(checkboxId).checked) {
+                                count++;
+                                selectedsubject += document.getElementById(checkboxId).value + "\n";
+                            }
+                        }
+                    }
+                    return {
+                        selectedsubject: selectedsubject,
+                        count: count
+                    };
+                   // console.log(selectedsubject);
+                    // console.log(count);
+                    
+                }
+                
+                function Disablebutton(){
+                    if(document.getElementById("OGen").checked == true){
+                        document.getElementById("btnSave").disabled = true
+                    }
+                }
+                function EnableButton(){
+                    if(document.getElementById("OGen").checked == false){
+                        document.getElementById("btnSave").disabled = false
+                    }
+                }
+                
+
+                function fnReset(){
+                    // document.getElementById("tbldata").style.display = '';
+                    document.getElementById("frmregistration").reset();
+                    //document.getElementById("ps").value = "";
+                    document.getElementById("checkcomp").style.display = 'none';
+                    document.getElementById("checkextc").style.display = 'none';
+                    document.getElementById("checkmech").style.display = 'none';
+                    document.getElementById("btnSave").disabled = false
+                }
+
+                function fnReloadpage(){
+                    location.reload();
+                }
+            </script>
+
+        </form>
+    </body>
+</html>
